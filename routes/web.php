@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Admin\ProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,4 +22,12 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', [HomeController::class, 'index'])->name('home');
+
+Route::get('/admin/home', [HomeController::class, 'admin'])->name('admin:home')->middleware('isAdmin');
+
+Route::get('/product/index', [ProductController::class, 'index'])->name('product:index');
+Route::get('/product/create', [ProductController::class, 'create'])->name('product:create');
+Route::post('/product/store', [ProductController::class, 'store'])->name('product:store');
+Route::get('/product/destroy/{product}', [ProductController::class, 'destroy'])->name('product:destroy');
+Route::get('/product/edit/{product}', [ProductController::class, 'edit'])->name('product:edit');
