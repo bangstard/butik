@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Product;
 use File;
+use Storage;
+use App\Models\Product;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Storage;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
@@ -28,7 +30,8 @@ class ProductController extends Controller
      */
     public function create()
     {
-        return view('admin.product.create');
+        $categories = Category::all();
+        return view('admin.product.create', compact('categories'));
     }
 
     /**
@@ -40,11 +43,12 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $product = new Product();
-        $product-> user_id = auth() -> user();
+        $product-> user_id = Auth::id();
+        $product-> category_id = $request->category;
         $product-> name = $request->name;
         $product-> price = $request->price;
         $product-> description = $request->description;
-        $product-> image = $request->image;
+        // dd($product);
 
         $product->save();
 
@@ -92,9 +96,26 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Product $product)
     {
-        //
+        $product->name = $request->name;
+        $product->description = $request->description;
+        $product->price = $request->price;
+        $product->save();
+
+        if($request->hasFile('image')){
+            // rename file - 5-2021-09-03.jpg/xls
+            $filename = $product->id.'-'.date("Y-m-d").'.'.$request->image->getClientOriginalExtension();
+
+            // store attachment on storage
+            Storage::disk('public')->put($filename, File::get($request->image));
+
+            // update row
+            $product->image = $filename;
+            $product->save();
+        }
+
+        return redirect()->route('product:index');
     }
 
     /**
