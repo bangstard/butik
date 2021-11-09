@@ -14,6 +14,7 @@
                           <tr>
                             <th scope="col">#</th>
                             <th scope="col">Name</th>
+                            <th scope="col">Category</th>
                             <th scope="col">Price</th>
                             <th scope="col">Description</th>
                             <th scope="col">Image</th>
@@ -25,9 +26,18 @@
                           <tr>
                             <td>{{ $keys+1 }}</td>
                             <td>{{ $product->name }}</td>
+                            <td>{{ $product->category->type }}</td>
                             <td>{{ $product->price }}</td>
                             <td>{{ $product->description }}</td>
-                            <td>{{ $product->image }}</td>
+                            @if($product->image) 
+                                <td>
+                                    <a target="_blank" href="{{ asset('storage/'.$product->image) }}" class="">
+                                    <img src="{{ asset('storage/'.$product->image) }}" width="50px;" height="50px;" alt=""> 
+                                    </a>
+                                </td>
+                            @else
+                                <td></td>
+                            @endif
                             <td class="text-center">
                               <a href="{{ route('product:destroy', $product) }}" type="button" class="btn btn-danger">Delete</a>
                               <a href="{{ route('product:edit', $product) }}" type="button" class="btn btn-info">Edit</a>
