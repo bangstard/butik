@@ -8,8 +8,15 @@
                 <div class="card-header">{{ __('Add Products') }}</div>
 
                 <div class="card-body">
-                    <form method="POST" action="{{ route('product:store') }}">
+                    <form method="POST" action="{{ route('product:store') }}" enctype="multipart/form-data">
                         @csrf
+
+                        <select class="form-select" name="category" aria-label="Default select example">
+                            <option selected>Category</option>
+                            @foreach ($categories as $category )
+                                <option value="{{ $category->id }}">{{ $category->type }}</option>    
+                            @endforeach
+                          </select>
 
                         <div class="md-3">
                             <label for="name" class="form-label">Name</label>
